@@ -934,31 +934,32 @@ require('lazy').setup({
   },
 })
 
-
-require 'lspconfig'.fish_lsp.setup {}
-require 'lspconfig'.basedpyright.setup {}
-require 'lspconfig'.lua_ls.setup {}
-require 'lspconfig'.gopls.setup {}
-require 'lspconfig'.rust_analyzer.setup {}
-require 'lspconfig'.hls.setup {}
-require 'lspconfig'.clangd.setup {}
-require 'lspconfig'.html.setup {}
-require 'lspconfig'.nixd.setup {}
-require 'lspconfig'.nil_ls.setup {}
-require 'lspconfig'.kotlin_language_server.setup {}
-require 'lspconfig'.ts_ls.setup {}
-require 'lspconfig'.texlab.setup {}
-require 'lspconfig'.yamlls.setup {
+vim.lsp.enable('fish_lsp')
+vim.lsp.enable('basedpyright')
+vim.lsp.enable('lua_ls')
+vim.lsp.enable('gopls')
+vim.lsp.enable('rust_analyzer')
+vim.lsp.enable('hls')
+vim.lsp.enable('clangd')
+vim.lsp.enable('html')
+vim.lsp.enable('nixd')
+vim.lsp.enable('nil_ls')
+vim.lsp.enable('kotlin_language_server')
+vim.lsp.enable('ts_ls')
+vim.lsp.enable('texlab')
+vim.lsp.enable('yamlls', {
   settings = {
     yaml = {
       schemas = {
         -- schema of kubernetes yaml 1.32.1
-        ["https://raw.githubusercontent.com/yannh/kubernetes-json-schema/refs/heads/master/v1.32.1-standalone-strict/all.json"] = "/*.k8s.yaml",
-        ["https://raw.githubusercontent.com/spion/concourse-jsonschema-generator/refs/heads/main/schema.json"] = "/ci/*.yaml",
+        ["https://raw.githubusercontent.com/yannh/kubernetes-json-schema/refs/heads/master/v1.32.1-standalone-strict/all.json"] =
+        "/*.k8s.yaml",
+        ["https://raw.githubusercontent.com/spion/concourse-jsonschema-generator/refs/heads/main/schema.json"] =
+        "/ci/*.yaml",
       },
     },
   }
-}
+})
 
 
 
