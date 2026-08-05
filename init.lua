@@ -91,7 +91,7 @@ vim.g.mapleader = ' '
 vim.g.maplocalleader = ' '
 
 -- Set to true if you have a Nerd Font installed and selected in the terminal
-vim.g.have_nerd_font = false
+vim.g.have_nerd_font = true
 
 -- [[ Setting options ]]
 -- See `:help vim.opt`
@@ -240,6 +240,8 @@ vim.opt.rtp:prepend(lazypath)
 -- NOTE: Here is where you install your plugins.
 require('lazy').setup({
 
+  { 'wakatime/vim-wakatime', lazy = false },
+
   -- status line
   {
     'nvim-lualine/lualine.nvim',
@@ -259,7 +261,7 @@ require('lazy').setup({
   --    require('Comment').setup({})
 
   -- "gc" to comment visual regions/lines
-  { 'numToStr/Comment.nvim',    opts = {} },
+  { 'numToStr/Comment.nvim', opts = {} },
 
   -- Here is a more advanced example where we pass configuration
   -- options to `gitsigns.nvim`. This is equivalent to the following Lua:
@@ -303,7 +305,15 @@ require('lazy').setup({
 
   {
     'stevearc/aerial.nvim',
-    opts = {},
+    opts = {
+      backends = { "treesitter" },
+      -- optionally use on_attach to set keymaps when aerial has attached to a buffer
+      on_attach = function(bufnr)
+        -- Jump forwards/backwards with '{' and '}'
+        vim.keymap.set("n", "{", "<cmd>AerialPrev<CR>", { buffer = bufnr })
+        vim.keymap.set("n", "}", "<cmd>AerialNext<CR>", { buffer = bufnr })
+      end,
+    },
     dependencies = {
       'nvim-treesitter/nvim-treesitter',
       'nvim-tree/nvim-web-devicons'
@@ -814,7 +824,7 @@ require('lazy').setup({
     name = "catppuccin",
     priority = 1000,
     init = function()
-      vim.cmd.colorscheme 'catppuccin'
+      vim.cmd.colorscheme 'catppuccin-nvim'
     end
   },
 
@@ -859,9 +869,11 @@ require('lazy').setup({
   },
   { -- Highlight, edit, and navigate code
     'nvim-treesitter/nvim-treesitter',
+    lazy = false,
     build = ':TSUpdate',
+    branch = 'main',
     opts = {
-      ensure_installed = { 'bash', 'c', 'html', 'lua', 'luadoc', 'markdown', 'vim', 'vimdoc' },
+      ensure_installed = { 'bash', 'python', 'javascript', 'typescript', 'rust', 'nix', 'c', 'diff', 'html', 'lua', 'luadoc', 'markdown', 'markdown_inline', 'query', 'vim', 'vimdoc' },
       -- Autoinstall languages that are not installed
       auto_install = true,
       highlight = {
@@ -879,7 +891,7 @@ require('lazy').setup({
       -- Prefer git instead of curl in order to improve connectivity in some environments
       require('nvim-treesitter.install').prefer_git = true
       ---@diagnostic disable-next-line: missing-fields
-      require('nvim-treesitter.configs').setup(opts)
+      require('nvim-treesitter.config').setup(opts)
 
       -- There are additional nvim-treesitter modules that you can use to interact
       -- with nvim-treesitter. You should go explore a few and see what interests you:
@@ -942,12 +954,88 @@ vim.lsp.enable('rust_analyzer')
 vim.lsp.enable('hls')
 vim.lsp.enable('clangd')
 vim.lsp.enable('html')
-vim.lsp.enable('nixd')
+
+vim.lsp.config('nil_ls', {
+  settings = {
+    ["nil"] = {
+      formatting = {
+        -- External formatter command (with arguments).
+        -- It should accepts file content in stdin and print the formatted code into stdout.
+        -- Type: [string] | null
+        -- Example: {"nixfmt"}
+        command = { 'nixfmt' }, -- 'null' in JSON translates to 'nil' in Lua (or you can just omit this line)
+      },
+      diagnostics = {
+        -- Ignored diagnostic kinds.
+        -- The kind identifier is a snake_cased_string usually shown together
+        -- with the diagnostic message.
+        -- Type: [string]
+        -- Example: {"unused_binding", "unused_with"}
+        ignored = {},
+
+        -- Files to exclude from showing diagnostics. Useful for generated files.
+        -- It accepts an array of paths. Relative paths are joint to the workspace root.
+        -- Glob patterns are currently not supported.
+        -- Type: [string]
+        -- Example: {"Cargo.nix"}
+        excludedFiles = {},
+      },
+      nix = {
+        -- The path to the `nix` binary.
+        -- Type: string
+        -- Example: "/run/current-system/sw/bin/nix"
+        binary = "nix",
+
+        -- The heap memory limit in MiB for `nix` evaluation.
+        -- Currently it only applies to flake evaluation when `autoEvalInputs` is
+        -- enabled, and only works for Linux. Other `nix` invocations may be also
+        -- applied in the future. `null` means no limit.
+        -- As a reference, `nix flake show --legacy nixpkgs` usually requires
+        -- about 2GiB memory.
+        --
+        -- Type: number | null
+        -- Example: 1024
+        maxMemoryMB = 2560,
+
+        flake = {
+          -- Auto-archiving behavior which may use network.
+          --
+          -- - null: Ask every time.
+          -- - true: Automatically run `nix flake archive` when necessary.
+          -- - false: Do not archive. Only load inputs that are already on disk.
+          -- Type: null | boolean
+          -- Example: true
+          autoArchive = nil,
+
+          -- Whether to auto-eval flake inputs.
+          -- The evaluation result is used to improve completion, but may cost
+          -- lots of time and/or memory.
+          --
+          -- Type: boolean
+          -- Example: true
+          autoEvalInputs = false,
+
+          -- The input name of nixpkgs for NixOS options evaluation.
+          --
+          -- The options hierarchy is used to improve completion, but may cost
+          -- lots of time and/or memory.
+          -- If this value is `null` or is not found in the workspace flake's
+          -- inputs, NixOS options are not evaluated.
+          --
+          -- Type: null | string
+          -- Example: "nixos"
+          nixpkgsInputName = "nixpkgs",
+        },
+      },
+    },
+  },
+})
 vim.lsp.enable('nil_ls')
 vim.lsp.enable('kotlin_language_server')
 vim.lsp.enable('ts_ls')
 vim.lsp.enable('texlab')
-vim.lsp.enable('yamlls', {
+vim.lsp.enable('zls')
+vim.lsp.config('yamlls', {
   settings = {
     yaml = {
       schemas = {
@@ -960,18 +1048,19 @@ vim.lsp.enable('yamlls', {
     },
   }
 })
+vim.lsp.enable('yamlls')
 
 
 
-require("aerial").setup({
-  backends = { "treesitter" },
-  -- optionally use on_attach to set keymaps when aerial has attached to a buffer
-  on_attach = function(bufnr)
-    -- Jump forwards/backwards with '{' and '}'
-    vim.keymap.set("n", "{", "<cmd>AerialPrev<CR>", { buffer = bufnr })
-    vim.keymap.set("n", "}", "<cmd>AerialNext<CR>", { buffer = bufnr })
-  end,
-})
+-- require("aerial").setup({
+--   backends = { "treesitter" },
+--   -- optionally use on_attach to set keymaps when aerial has attached to a buffer
+--   on_attach = function(bufnr)
+--     -- Jump forwards/backwards with '{' and '}'
+--     vim.keymap.set("n", "{", "<cmd>AerialPrev<CR>", { buffer = bufnr })
+--     vim.keymap.set("n", "}", "<cmd>AerialNext<CR>", { buffer = bufnr })
+--   end,
+-- })
 -- You probably also want to set a keymap to toggle aerial
 vim.keymap.set("n", "<leader>a", "<cmd>AerialToggle!<CR>")
 
