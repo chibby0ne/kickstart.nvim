@@ -159,17 +159,19 @@ vim.opt.scrolloff = 10
 --  See `:help vim.keymap.set()`
 
 -- These keybindings are now really hard to get rid of from my fingers
-vim.keymap.set({ 'n', 'v' }, 'j', 'h', { silent = true })
-vim.keymap.set({ 'n', 'v' }, 'k', 'j', { silent = true })
-vim.keymap.set({ 'n', 'v' }, 'l', 'k', { silent = true })
-vim.keymap.set({ 'n', 'v' }, ';', 'l', { silent = true })
-vim.keymap.set({ 'i', 'v' }, 'jk', '<Esc>', { silent = true })
-vim.keymap.set('c', 'jk', '<c-u><bs>', { silent = true })
+-- vim.keymap.set({ 'n', 'v' }, 'j', 'h', { silent = true })
+-- vim.keymap.set({ 'n', 'v' }, 'k', 'j', { silent = true })
+-- vim.keymap.set({ 'n', 'v' }, 'l', 'k', { silent = true })
+-- vim.keymap.set({ 'n', 'v' }, ';', 'l', { silent = true })
+-- vim.keymap.set({ 'i', 'v' }, 'jk', '<Esc>', { silent = true })
+-- vim.keymap.set('c', 'jk', '<c-u><bs>', { silent = true })
+--
+-- vim.keymap.set('n', '<c-w>j', '<c-w>h', { silent = true })
+-- vim.keymap.set('n', '<c-w>k', '<c-w>j', { silent = true })
+-- vim.keymap.set('n', '<c-w>l', '<c-w>k', { silent = true })
+-- vim.keymap.set('n', '<c-w>;', '<c-w>l', { silent = true })
 
-vim.keymap.set('n', '<c-w>j', '<c-w>h', { silent = true })
-vim.keymap.set('n', '<c-w>k', '<c-w>j', { silent = true })
-vim.keymap.set('n', '<c-w>l', '<c-w>k', { silent = true })
-vim.keymap.set('n', '<c-w>;', '<c-w>l', { silent = true })
+vim.keymap.set({ 'i', 'v' }, 'hj', '<Esc>', { silent = true })
 
 -- Set highlight on search, but clear on pressing <Esc> in normal mode
 vim.opt.hlsearch = true
