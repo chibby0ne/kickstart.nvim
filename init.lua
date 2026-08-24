@@ -672,7 +672,7 @@ require('lazy').setup({
         -- Disable "format_on_save lsp_fallback" for languages that don't
         -- have a well standardized coding style. You can add additional
         -- languages here or re-enable it for the disabled ones.
-        local disable_filetypes = { c = true, cpp = true }
+        local disable_filetypes = { c = true, cpp = true, nix = true }
         return {
           timeout_ms = 500,
           lsp_fallback = not disable_filetypes[vim.bo[bufnr].filetype],
@@ -901,6 +901,9 @@ require('lazy').setup({
       --    - Treesitter + textobjects: https://github.com/nvim-treesitter/nvim-treesitter-textobjects
     end,
   },
+  {
+    'mfussenegger/nvim-jdtls',
+  },
 
   -- The following two comments only work if you have downloaded the kickstart repo, not just copy pasted the
   -- init.lua. If you want these files, they are in the repository, so you can just download them and
@@ -963,7 +966,7 @@ vim.lsp.config('nil_ls', {
         -- It should accepts file content in stdin and print the formatted code into stdout.
         -- Type: [string] | null
         -- Example: {"nixfmt"}
-        command = { 'nixfmt' }, -- 'null' in JSON translates to 'nil' in Lua (or you can just omit this line)
+        command = nil, -- 'null' in JSON translates to 'nil' in Lua (or you can just omit this line)
       },
       diagnostics = {
         -- Ignored diagnostic kinds.
@@ -1031,6 +1034,7 @@ vim.lsp.config('nil_ls', {
   },
 })
 vim.lsp.enable('nil_ls')
+vim.lsp.enable('nixd')
 vim.lsp.enable('kotlin_language_server')
 vim.lsp.enable('ts_ls')
 vim.lsp.enable('texlab')
@@ -1049,6 +1053,15 @@ vim.lsp.config('yamlls', {
   }
 })
 vim.lsp.enable('yamlls')
+-- vim.lsp.config("jdtls", {
+--   settings = {
+--     java = {
+--         -- Custom eclipse.jdt.ls options go here
+--     },
+--   },
+-- })
+vim.lsp.enable('jdtls')
+vim.lsp.enable('elp')
 
 
 
