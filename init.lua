@@ -171,7 +171,7 @@ vim.opt.scrolloff = 10
 -- vim.keymap.set('n', '<c-w>l', '<c-w>k', { silent = true })
 -- vim.keymap.set('n', '<c-w>;', '<c-w>l', { silent = true })
 
-vim.keymap.set({ 'i', 'v' }, 'hj', '<Esc>', { silent = true })
+vim.keymap.set({ 'i', 'v' }, 'jk', '<Esc>', { silent = true })
 
 -- Set highlight on search, but clear on pressing <Esc> in normal mode
 vim.opt.hlsearch = true
